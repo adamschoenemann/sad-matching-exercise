@@ -6,7 +6,7 @@ import scala.collection.immutable.IndexedSeq
 import scala.collection.immutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
-object Main {
+object ImmutableMatching {
 
   trait Elem {
     val id:Int
@@ -83,7 +83,6 @@ object Main {
             val unengaged__ = unengaged_.enqueue(old)
             loop(unengaged__, sol.unengage(old_).addPair(p, r))
           } else {
-            println("no success for " + p)
             loop(unengaged_.enqueue(p), sol)
           }
         }
@@ -93,35 +92,9 @@ object Main {
       val queue = Queue(proposers: _*)
       loop(queue, init)
     }
-  //     var propQueue = Queue[Proposer]()
-  //     for (p <- proposers) {
-  //       propQueue.enqueue(p)
-  //     }
-
-  //     while(!propQueue.isEmpty) {
-  //       var p = propQueue.dequeue()
-  //       var r = getResponder(p.prefs.pop())
-
-  //       if (r.isUnengaged) {
-  //         r.engaged = p.id
-  //         p.engaged = r.id
-  //       } else if (r.accepts(p)) {
-  //         // dump the previous
-  //         val old = getProposer(r.engaged)
-  //         old.engaged = 0
-  //         propQueue.enqueue(old)
-
-  //         r.engaged = p.id
-  //         p.engaged = r.id
-  //       } else { // he does not find a woman
-  //         propQueue.enqueue(p)
-  //       }
-  //     }
-  //     Solution(proposers, responders)
-  //   }
   }
 
-  def main(args:Array[String]) = {
+  def parseProblem(input:String) = {
 
     def isPersonLine(line:String):Boolean =
         line.trim.length > 0 && !isPreferenceLine(line)
@@ -130,19 +103,16 @@ object Main {
 
     type ParserProblem = (Int, Array[Proposer], Array[Responder])
 
-    val problem = Source.fromFile("./data/sm-bbt-in.txt")
+    val problem = Source.fromFile(input)
       .getLines().foldLeft[Option[ParserProblem]] (None) ((acc, l:String) => {
         if (l.startsWith("#")) { // its a comment
-          println(l)
           // do nothing
           acc
         } else if (l.trim.length == 0) { // empty line
-          println("line")
           // do nothing
           acc
         } else if (l.startsWith("n=")) { // specifies n
           val n = l.split("=")(1).toInt
-          println("n found: " + n)
           Some((
             n, new Array[Proposer](n), new Array[Responder](n))
           )
@@ -193,76 +163,6 @@ object Main {
 
     val solution = mproblem.solve()
     println(solution)
-
-
-    // def stackToArray[A](s:Stack[A], buf:ArrayBuffer[A]):ArrayBuffer[A] = {
-    //   s.foreach (x => {
-    //     buf += x
-    //   })a
-    //   buf
-    // }
-
-    // def newBuffer[A](size:Int, default:A):ArrayBuffer[A] = {
-    //   var buf = new ArrayBuffer[A](size)
-    //   for (_ <- 0 until size)
-    //     buf += default
-    //   buf
-    // }
-
-    // var n = 0
-    // var proposers:ArrayBuffer[Proposer] = null
-    // var responders:ArrayBuffer[Responder]  = null
-
-
-
-    // Source.fromFile("./data/sm-bbt-in.txt").getLines().foreach {l =>
-    //   if (l.startsWith("#")) { // its a comment
-    //     // do nothing
-    //   } else if (l.trim.length == 0) { // empty line
-    //     // do nothing
-    //   } else if (l.startsWith("n=")) { // specifies n
-    //     n = l.split("=")(1).toInt
-    //     proposers  = newBuffer[Proposer](n, null)
-    //     responders = newBuffer[Responder](n, null)
-    //   } else if (isPreferenceLine(l)) {
-    //       val Array(idStr, prefsStr) = l.split(":")
-    //       val id = idStr.replace(":", "").toInt
-    //       val prefsArr = prefsStr.trim.split(" ").map(_.toInt)
-    //       if (id % 2 == 0) { // is a responder
-    //         val r = responders(id/2 - 1)
-    //         val prefs = newBuffer[Int](n, 0)
-    //         var n2 = n
-    //         for (prf <- prefsArr) {
-    //           prefs(prf/2) = n2
-    //           n2 -= 1
-    //         }
-    //         r.prefs = prefs
-    //       } else { // is a proposer
-    //         val p = proposers(id/2)
-    //         val prefs = Stack[Int]()
-    //         for (prf <- prefsArr) {
-    //           prefs.push(prf)
-    //         }
-    //         p.prefs = prefs
-    //       }
-    //       val person =
-    //         if (id % 2 == 0) responders(id/2 - 1) else proposers(id/2)
-
-    //   } else if (isPersonLine(l)) {
-    //     val Array(idStr, labelStr) = l.split(" ")
-    //     val id = idStr.toInt
-    //     if (id % 2 == 0) {
-    //       responders(id/2 - 1) = Responder(id, labelStr, Array(n))
-    //     } else {
-    //       proposers(id/2) = Proposer(id, labelStr, Stack())
-    //     }
-    //   } else {
-    //     throw new RuntimeException("unexpected input line: " + l)
-    //   }
-    // }
-
-
-
   }
 
 }

@@ -30,7 +30,7 @@ object ImmutableMatching {
       prefs(id/2)
     }
 
-    def accepts(p:Proposer):Boolean = (lookupPref(p.id) > this.engaged)
+    def accepts(p:Proposer):Boolean = (lookupPref(p.id) > lookupPref(this.engaged))
   }
 
 
@@ -120,7 +120,7 @@ object ImmutableMatching {
           val (n, proposers, responders) = acc.get
           val Array(idStr, prefsStr) = l.split(":")
           val id = idStr.replace(":", "").toInt
-          val prefsArr = prefsStr.trim.split(" ").map(_.toInt)
+          val prefsArr = prefsStr.trim.split(" ").map(_.toInt).reverse
           if (id % 2 == 0) { // is a responder
             val r = responders(id/2 - 1)
             val (_,prefs) = prefsArr.foldRight (n, new Array[Int](n)) {(prf, acc) =>

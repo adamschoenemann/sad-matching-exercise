@@ -28,7 +28,7 @@ object Matching {
       prefs(id/2)
     }
 
-    def accepts(p:Proposer):Boolean = (lookupPref(p.id) > this.engaged)
+    def accepts(p:Proposer):Boolean = (lookupPref(p.id) > lookupPref(this.engaged))
   }
 
 
@@ -63,6 +63,7 @@ object Matching {
           val old = getProposer(r.engaged)
           old.engaged = 0
           propQueue.enqueue(old)
+          println(r.label + " accepts " + p.label + " over " + old.label)
 
           r.engaged = p.id
           p.engaged = r.id
@@ -129,11 +130,8 @@ object Matching {
             for (prf <- prefsArr) {
               prefs.push(prf)
             }
-            p.prefs = prefs
+            p.prefs = prefs.reverse
           }
-          val person =
-            if (id % 2 == 0) responders(id/2 - 1) else proposers(id/2)
-
       } else if (isPersonLine(l)) {
         val Array(idStr, labelStr) = l.split(" ")
         val id = idStr.toInt
@@ -151,6 +149,7 @@ object Matching {
         proposers,
         responders
       )
+    println(problem)
 
     val solution = problem.solve()
     println(solution)

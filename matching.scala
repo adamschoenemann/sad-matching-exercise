@@ -6,12 +6,7 @@ import scala.collection.mutable.HashMap
 
 object Matching {
 
-  trait Elem {
-    val id:Int
-    val label:String
-  }
-
-  case class Proposer(id:Int, label:String, var prefs:Stack[Int]) extends Elem {
+  case class Proposer(id:Int, label:String, var prefs:Stack[Int]) {
 
     var engaged = 0
     def isUnengaged = (engaged == 0)
@@ -19,7 +14,7 @@ object Matching {
 
   // prefs is converted from textual format to an array indexed by (id/2)
   // to preferability
-  case class Responder(id:Int, label:String, var prefs:ArrayBuffer[Int]) extends Elem {
+  case class Responder(id:Int, label:String, var prefs:ArrayBuffer[Int]) {
 
     def isUnengaged = (engaged == 0)
     var engaged = 0
@@ -45,6 +40,7 @@ object Matching {
     def getProposer(id:Int):Proposer = proposers(id/2)
     def getResponder(id:Int):Responder = responders(id/2 - 1) // alternatively ((id-1)/2)
 
+    // mutates MatchingProblem and returns a new solution
     def solve():Solution = {
       var propQueue = Queue[Proposer]()
       for (p <- proposers) {
@@ -63,7 +59,7 @@ object Matching {
           val old = getProposer(r.engaged)
           old.engaged = 0
           propQueue.enqueue(old)
-          println(r.label + " accepts " + p.label + " over " + old.label)
+          // println(r.label + " accepts " + p.label + " over " + old.label)
 
           r.engaged = p.id
           p.engaged = r.id
@@ -149,10 +145,10 @@ object Matching {
         proposers,
         responders
       )
-    println(problem)
+    // println(problem)
 
     val solution = problem.solve()
-    println(solution)
+    solution
 
   }
 

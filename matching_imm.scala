@@ -65,6 +65,7 @@ object ImmutableMatching {
 
     def solve():Solution = {
 
+      @annotation.tailrec
       def loop(unengaged:Queue[Proposer], sol:Solution):Solution = {
         if (unengaged.isEmpty) {
           sol
